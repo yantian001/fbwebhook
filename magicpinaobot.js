@@ -17,11 +17,11 @@ const msg_imgs = ['01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg'];
 const msg_text = ['Back to Jump Runner!', 'Join the Jump Runners!', 'Welcome Back!', 'Time to Join Us Now!', 'Join and Run longer!'];
 
 var connection = mysql.createConnection({     
-  host     : RUN_ON_LOCAL_SERVER ? '47.52.75.206' : 'localhost',       
-  user     : 'longtrip',              
-  password : 'db_longtrip_2018',       
-  port: '9876',                   
-  database: 'fbgames' 
+  host     : process.env.MYSQL_HOST,
+  user     : process.env.MYSQL_USER,              
+  password : process.env.MYSQL_PWD,       
+  port: process.env.MYSQL_PORT,                   
+  database: process.env.MYSQL_DATABASE 
 }); 
  
 connection.connect();
@@ -60,9 +60,9 @@ module.exports = function(app) {
     //
     // GET /bot
     //
-    app.get('/fb/jetpackmasterbot', function(request, response) {
+    app.get('/fb/magicpinaobot', function(request, response) {
         if (request.query['hub.mode'] === 'subscribe' && 
-			request.query['hub.verify_token'] === 'longtrip') {            
+			request.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {            
             //request.query['hub.verify_token'] === process.env.BOT_VERIFY_TOKEN) {            
             console.log("Validating webhook");
             response.status(200).send(request.query['hub.challenge']);
@@ -75,7 +75,7 @@ module.exports = function(app) {
     //
     // POST /bot
     //
-    app.post('/fb/jetpackmasterbot', function(request, response) {
+    app.post('/fb/magicpinaobot', function(request, response) {
        var data = request.body;
        console.log('received bot webhook');
         // Make sure this is a page subscription
@@ -121,7 +121,7 @@ module.exports = function(app) {
 					console.log('Update Topscore for Jetpackmaster Success, score:' + topscore.score+ 'Date:'+ topscore.time);
 			});					
         }
-        var sqlQuery = 'SELECT * FROM jetpackmaster WHERE sender_id = ?';
+        var sqlQuery = 'SELECT * FROM magic_pinao WHERE sender_id = ?';
         var sqlQueryParam = [senderId];
         connection.query(sqlQuery, sqlQueryParam, function(err, queryResult){
             if(err){
@@ -138,7 +138,7 @@ module.exports = function(app) {
                 nextSendTime.setDate(nextSendTime.getDate() + msg_interval_days[0]);
             }
             if(queryResult.length == 0){
-                var sqlInsert = 'INSERT INTO jetpackmaster(sender_id,player_id,last_open_time,total_open_count,next_send_time, total_send_count, top_score) VALUES(?,?,?,?,?,?,?)';
+                var sqlInsert = 'INSERT INTO magic_pinao(sender_id,player_id,last_open_time,total_open_count,next_send_time, total_send_count, top_score) VALUES(?,?,?,?,?,?,?)';
                 var sqlInsertParams = [senderId, playerId, now, 1, nextSendTime, 0, topScore];
                 connection.query(sqlInsert, sqlInsertParams, function(err, insertResult){
                     if(err){
@@ -151,7 +151,7 @@ module.exports = function(app) {
             else if(queryResult.length == 1){
                 var currentOpenCount = queryResult[0].total_open_count;
                 var currentTopScore = queryResult[0].top_score;
-                var sqlUpdate = 'UPDATE jetpackmaster SET last_open_time = ?,total_open_count = ?, next_send_time = ?, total_send_count = ?, top_score = ? WHERE sender_id = ?';
+                var sqlUpdate = 'UPDATE magic_pinao SET last_open_time = ?,total_open_count = ?, next_send_time = ?, total_send_count = ?, top_score = ? WHERE sender_id = ?';
                 var sqlUpdateParam = [now, currentOpenCount + 1, nextSendTime, 0, topScore > currentTopScore ? topScore : currentTopScore, senderId];
                 connection.query(sqlUpdate, sqlUpdateParam, function(err, updateResult){
                     if(err){
@@ -168,7 +168,7 @@ module.exports = function(app) {
     // Handle game_play (when player closes game) events here. 
     //
     function handleGameplay(item) {
-        var pageToken = 'EAAEAVBruJBQBAAwQHXQy9q5KIZCIeolYM0WYl4vQ7znZBvKsujrH58z6ooAuxOVWUYiv6u2ZADX7wB3RjZC373srpvdPWaXqVpVLKE88qgQmJ2u0KN2WjW8EYAGF0otrA7dZAGwuNnEZBylaE0HmI9MA0ztdmgIQNc8Pct2n19ugZDZD';
+        var pageToken = process.env.PAGE_TOKEN;
                          
         // Check for payload
         var payload = {};
@@ -200,7 +200,7 @@ module.exports = function(app) {
         else{
             endTime.setMinutes(endTime.getMinutes() + 1);
         }
-        var sqlQuery = 'SELECT * FROM jetpackmaster WHERE next_send_time <= ? AND total_send_count < ?';
+        var sqlQuery = 'SELECT * FROM magic_pinao WHERE next_send_time <= ? AND total_send_count < ?';
             var sqlQueryParam = [endTime, MAX_TOTAL_SEND_COUNT];
             connection.query(sqlQuery, sqlQueryParam, function(err, queryResult){
                 if(err){
@@ -218,7 +218,7 @@ module.exports = function(app) {
                         nextSendTime.setDate(nextSendTime.getDate() + msg_interval_days[item.total_send_count]);
                     }
                     console.log('nextSendTime : ' + nextSendTime.toLocaleString());
-                    var sqlUpdate = 'UPDATE jetpackmaster SET next_send_time = ?, total_send_count = ? WHERE sender_id = ?';
+                    var sqlUpdate = 'UPDATE magic_pinao SET next_send_time = ?, total_send_count = ? WHERE sender_id = ?';
                     var sqlUpdateParam = [nextSendTime, item.total_send_count + 1, item.sender_id];
                     connection.query(sqlUpdate, sqlUpdateParam, function(err, updateResult){
                         if(err){

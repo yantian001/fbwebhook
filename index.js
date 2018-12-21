@@ -2,6 +2,9 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var dotenv = require('dotenv');
+
+dotenv.config();
 
 app.set('port', (process.env.PORT || 3000));
 app.use(express.static('static'));
@@ -17,4 +20,4 @@ app.get('/', function(request, response){
   response.send('Hello World\n');
 });
 
-//require('./jetpackmasterbot.js')(app);
+require('./magicpinaobot.js')(app);
