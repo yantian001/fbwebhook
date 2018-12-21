@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 
 app.set('port', (process.env.PORT || 3000));
-app.user(express.static('static'));
+app.use(express.static('static'));
 app.use(bodyParser.json());
 app.use(cors());
 
