@@ -5,15 +5,16 @@ var path = require('path');
 
  
 const RUN_ON_LOCAL_SERVER = false;
-const RUN_FOR_TEST = false;
+const RUN_FOR_TEST = true;
 const MAX_TOTAL_SEND_COUNT = 5;
 const INTERVAL_TICKS_MS = 60000;
-
+const pageToken = process.env.PAGE_TOKEN;
+const SERVER_ARRD = 'https://boolgame.top/fbwebhook/images/';
 var jetpack_master_global_top_score = -1;
 var jetpack_master_global_top_score_update_time = new Date();
 const msg_interval_days = [1, 1, 2, 3, 3];
 const msg_interval_seconds = [10, 10, 20, 30, 30];
-const msg_imgs = ['01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg'];
+const msg_imgs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
 const msg_text = ['Back to Jump Runner!', 'Join the Jump Runners!', 'Welcome Back!', 'Time to Join Us Now!', 'Join and Run longer!'];
 
 var connection = mysql.createConnection({     
@@ -168,7 +169,7 @@ module.exports = function(app) {
     // Handle game_play (when player closes game) events here. 
     //
     function handleGameplay(item) {
-        var pageToken = process.env.PAGE_TOKEN;
+        
                          
         // Check for payload
         var payload = {};
@@ -183,11 +184,11 @@ module.exports = function(app) {
             }
 
             if(jetpack_master_global_top_score > 0 && jetpack_master_global_top_score_update_time.getTime() > last_send_time.getTime()){
-                sendMessage(item.sender_id, null, pageToken, "https://www.long-trip.com/message-content/jetpack-master/img/" + msg_imgs[item.total_send_count], "Someone has run for " + jetpack_master_global_top_score + " ! Join Us NOW!!!", "Play now!", payload);
+                sendMessage(item.sender_id, null, pageToken, SERVER_ARRD + msg_imgs[item.total_send_count], "Someone has run for " + jetpack_master_global_top_score + " ! Join Us NOW!!!", "Play now!", payload);
                 return;
             }
         }
-        sendMessage(item.sender_id, null, pageToken, "https://www.long-trip.com/message-content/jetpack-master/img/" + msg_imgs[item.total_send_count], msg_text[item.total_send_count], "Play now!", payload);
+        sendMessage(item.sender_id, null, pageToken, SERVER_ARRD + msg_imgs[item.total_send_count], msg_text[item.total_send_count], "Play now!", payload);
     }
 
     function IntervalHandler(){
