@@ -16,7 +16,7 @@ var jetpack_master_global_top_score_update_time = new Date();
 const msg_interval_days = [1, 1, 2, 3, 3];
 const msg_interval_seconds = [10, 10, 20, 30, 30];
 const msg_imgs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
-const msg_text = ['Back to Jump Runner!', 'Join the Jump Runners!', 'Welcome Back!', 'Time to Join Us Now!', 'Join and Run longer!'];
+const msg_text = ['A vicious gang is after you! 🔫 Kill or be killed 🔫!', 'A vicious gang is after you! 🔫 Kill or be killed 🔫!', 'Welcome Back!', 'A vicious gang is after you! 🔫 Kill or be killed 🔫!', 'A vicious gang is after you! 🔫 Kill or be killed 🔫!'];
 
 var connection = mysql.createConnection({     
   host     : process.env.MYSQL_HOST,
@@ -189,7 +189,7 @@ module.exports = function(app) {
                 return;
             }
         }
-        sendMessage(item.sender_id, null, pageToken,   SERVER_ARRD +'images/' + msg_imgs[item.total_send_count], msg_text[item.total_send_count], "Play now!", payload);
+        sendMessage(item.sender_id, null, pageToken,   SERVER_ARRD +'images/' + msg_imgs[item.total_send_count], msg_text[item.total_send_count], "Go Fighting!", payload);
     }
 
     function IntervalHandler(){
