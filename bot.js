@@ -185,11 +185,11 @@ module.exports = function(app) {
             }
 
             if(jetpack_master_global_top_score > 0 && jetpack_master_global_top_score_update_time.getTime() > last_send_time.getTime()){
-                sendMessage(item.sender_id, null, pageToken, SERVER_ARRD + msg_imgs[item.total_send_count], "Someone has run for " + jetpack_master_global_top_score + " ! Join Us NOW!!!", "Play now!", payload);
+                sendMessage(item.sender_id, null, pageToken, SERVER_ARRD+'images/' + msg_imgs[item.total_send_count], "Someone has run for " + jetpack_master_global_top_score + " ! Come back now!!!", "Play now!", payload);
                 return;
             }
         }
-        sendMessage(item.sender_id, null, pageToken, SERVER_ARRD + msg_imgs[item.total_send_count], msg_text[item.total_send_count], "Play now!", payload);
+        sendMessage(item.sender_id, null, pageToken,   SERVER_ARRD +'images/' + msg_imgs[item.total_send_count], msg_text[item.total_send_count], "Play now!", payload);
     }
 
     function IntervalHandler(){
