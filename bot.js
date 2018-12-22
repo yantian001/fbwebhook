@@ -88,7 +88,11 @@ module.exports = function(app) {
                 entry.messaging.forEach(function(event) {
                     if (event.game_play) {
                         receivedGameplay(event);
-                    } else {
+                    }
+                    else if(event.message){
+                        handleMessage(event);
+                    }
+                    else {
                         console.log("Webhook received unknown event: ", event);
                     }
                 });
@@ -96,7 +100,21 @@ module.exports = function(app) {
         }
         response.sendStatus(200);
     });
-	
+    
+    function handleMessage(event){
+        let senderId = event.sender.id;
+        let response = {
+            "text":"Thanks for your support!"
+        };
+        let requst_body ={
+            "recipient" :{
+                "id" : senderId
+            },
+            "message":response
+        };
+        callSendAPI(requst_body,pageToken);
+    }
+    
     function receivedGameplay(event) {
         var senderId = event.sender.id; 
         var playerId = event.game_play.player_id; 
