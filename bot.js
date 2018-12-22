@@ -289,7 +289,7 @@ module.exports = function(app) {
             json: true,  
             body: messageData
         }, function (error, response, body){
-            console.error('send api returned', 'error', error, 'status code', response.statusCode, 'body', body);
+            console.log('send api returned', 'error', error, 'status code', response.statusCode, 'body', body);
         });
     }
 }
