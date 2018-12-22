@@ -206,7 +206,7 @@ module.exports = function(app) {
             //     return;
             // }
         }
-        sendMessage(item.sender_id, null, pageToken,   SERVER_ARRD + message[item.total_send_count].image, message[item.total_send_count].context, message[item.total_send_count].cta, payload);
+        sendMessage(item.sender_id, null, pageToken,   SERVER_ARRD + message[item.total_send_count].image, message[item.total_send_count].content, message[item.total_send_count].cta, payload);
     }
 
     function IntervalHandler(){
